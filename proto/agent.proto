@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto;
+
+service Agent {
+	rpc Register(stream Frame) returns (stream Frame);
+}
+
+message Frame {
+	int64 Channel = 1;
+	enum flags{
+		Data = 0;		
+		Open = 1;
+		Close =2;
+	}
+	flags Flag = 2;
+	bytes Body = 3;
+}
