@@ -9,7 +9,7 @@ import (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "prism"
+	app.Name = "svagent"
 	app.Usage = "api gateway"
 	app.Version = "2.0.0"
 	log.SetFlags(log.Ltime | log.Lshortfile)

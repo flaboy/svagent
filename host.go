@@ -98,6 +98,7 @@ func (me *Service) Dispatch(frame *pb.Frame) {
 }
 
 func (me *Service) HandleConn(c net.Conn) {
+	log.Println("handle connection from ", c.RemoteAddr())
 	var channel_id = atomic.AddInt64(&me.channel_id_seq, 1)
 	bind, err := me.pickAgent(channel_id)
 	if err != nil {
