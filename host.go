@@ -11,6 +11,7 @@ import (
 	"math"
 	"net"
 	"os"
+	"sync"
 	"sync/atomic"
 )
 
@@ -44,6 +45,7 @@ type Service struct {
 	agents         *list.List
 	channel_id_seq int64
 	agents_map     map[int64]*Bind
+	lk             sync.Mutex
 }
 
 type Bind struct {
@@ -156,6 +158,9 @@ func (me *Service) pickAgent(channel_id int64) (bind *Bind, err error) {
 	}
 
 	bind = &Bind{agent: (el.Value).(*Agent), ch: make(chan *pb.Frame)}
+
+	me.lk.Lock()
+	defer me.lk.Unlock()
 	me.agents_map[channel_id] = bind
 	return
 }
