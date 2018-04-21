@@ -149,6 +149,7 @@ func (me *Service) pickAgent(channel_id int64) (bind *Bind, err error) {
 		return nil, errors.New("no backend")
 	}
 	n := int(math.Mod(float64(channel_id), float64(me.agents.Len())))
+	log.Println("backend: ", me.agents.Len(), "selected:", n)
 	el := me.agents.Front()
 	for i := 0; i < n; i++ {
 		el = el.Next()

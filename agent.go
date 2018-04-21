@@ -74,6 +74,7 @@ func (me *Birdge) Handle(frame *pb.Frame) {
 	conn, ok := me.mapper[frame.Channel]
 
 	if !ok {
+		log.Println("conn", frame.Channel)
 		dailer := &net.Dialer{}
 		conn, err = dailer.Dial("tcp4", me.to_addr)
 		if err != nil {
