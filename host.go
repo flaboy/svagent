@@ -15,12 +15,13 @@ import (
 )
 
 func host_start(ctx *cli.Context) (err error) {
-	start_service()
+	start_service(ctx)
 	return
 }
 
-func start_service() {
-	sv_addr := "0.0.0.0:6667"
+func start_service(ctx *cli.Context) {
+	sv_addr := ctx.String("server")
+	http_addr := ctx.String("http")
 	lis, err := net.Listen("tcp", sv_addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -29,7 +30,7 @@ func start_service() {
 	sv := &Service{}
 
 	sv.Init()
-	go sv.Start()
+	go sv.Start(http_addr)
 
 	pb.RegisterAgentServer(gs, sv)
 	reflection.Register(gs)
@@ -50,8 +51,8 @@ type Bind struct {
 	ch    chan *pb.Frame
 }
 
-func (me *Service) Start() {
-	l, err := net.Listen("tcp4", "0.0.0.0:5555")
+func (me *Service) Start(http_addr string) {
+	l, err := net.Listen("tcp4", http_addr)
 	if err != nil {
 		log.Println("ERROR", l)
 		os.Exit(1)

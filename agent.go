@@ -13,8 +13,8 @@ import (
 )
 
 func agent_start(ctx *cli.Context) (err error) {
-	to_addr := "127.0.0.1:8000"
-	sv_addr := "0.0.0.0:6667"
+	to_addr := ctx.String("local")
+	sv_addr := ctx.String("remote")
 
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
