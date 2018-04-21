@@ -8,14 +8,20 @@ import (
 	"google.golang.org/grpc/keepalive"
 	"log"
 	"net"
-	"os"
 	"time"
 )
 
 func agent_start(ctx *cli.Context) (err error) {
 	to_addr := ctx.String("local")
 	sv_addr := ctx.String("remote")
+	for {
+		agent_loop(ctx, to_addr, sv_addr)
+		time.Sleep(time.Second)
+	}
+	return
+}
 
+func agent_loop(ctx *cli.Context, to_addr, sv_addr string) {
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
 		grpc.WithBackoffConfig(
@@ -39,7 +45,8 @@ func agent_start(ctx *cli.Context) (err error) {
 	// ar := &AgentRequest{}
 	ar, err := c.Register(context.Background())
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 
 	// err = ar.Send(&pb.Frame{1, 0, []byte("aaa")})
@@ -49,12 +56,11 @@ func agent_start(ctx *cli.Context) (err error) {
 		frame, err := ar.Recv()
 		if err != nil {
 			log.Println(err)
-			os.Exit(1)
+			return
 		}
 		bridge.Handle(frame)
 	}
 	// ar.Recv() (*AgentResponse, error)
-	return
 }
 
 type Birdge struct {
